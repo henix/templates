@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<project name="template" default="jar" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<!-- ivy -->
+	<property name="ivy.version" value="2.2.0" />
+	<property name="ivy.dir" value="${basedir}/ivylib" />
+	<property name="ivy.jar.name" value="ivy-${ivy.version}.jar" />
+
+	<property name="jsch.version" value="0.1.46" />
+	<property name="jsch.jar.name" value="jsch-${ivy.version}.jar" />
+
+	<target name="init-ivy" description="Bootstrap Ivy">
+		<mkdir dir="${ivy.dir}" />
+		<get usetimestamp="true" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/${ivy.version}/${ivy.jar.name}" skipexisting="true" dest="${ivy.dir}/${ivy.jar.name}" />
+		<get usetimestamp="true" src="http://search.maven.org/remotecontent?filepath=com/jcraft/jsch/${jsch.version}/jsch-${jsch.version}.jar" skipexisting="true" dest="${ivy.dir}/${jsch.jar.name}" />
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+			<classpath>
+				<fileset dir="${ivy.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+	</target>
+
+	<target name="resolve" depends="init-ivy" description="retrieve dependencies with ivy">
+		<ivy:retrieve />
+	</target>
+
+	<target name="report" depends="resolve" description="report">
+		<ivy:report graph="false" />
+	</target>
+
+	<target name="clean-cache" depends="init-ivy" description="clean ivy cache">
+		<ivy:cleancache />
+	</target>
+
+	<target name="publish" depends="jar,init-ivy" description="publish it to ivy repo">
+		<ivy:publish resolver="myrepo" overwrite="true">
+			<artifacts pattern="${basedir}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+
+	<property name="classes" value="${basedir}/classes" />
+	<property name="src" value="${basedir}/src" />
+	<property name="target.filename" value="${basedir}/${ant.project.name}.jar" />
+
+	<path id="core.classpath">
+		<pathelement path="${classes}" />
+		<fileset dir="${basedir}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<target name="init" depends="init-ivy" description="make dirs">
+		<mkdir dir="${classes}" />
+	</target>
+
+	<target name="compile" depends="init,resolve" description="Compile the source">
+		<javac srcdir="${src}" destdir="${classes}" includeAntRuntime="no">
+			<classpath refid="core.classpath" />
+		</javac>
+	</target>
+
+	<target name="res" depends="init" description="Copy the resources to build dir">
+		<copy todir="${classes}">
+			<fileset dir="${src}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile,res" description="Make jar file">
+		<jar destfile="${target.filename}" basedir="${classes}" />
+	</target>
+
+	<target name="clean" description="Clean up the whole project">
+		<delete file="${target.filename}" />
+		<delete dir="${classes}" />
+	</target>
+</project>

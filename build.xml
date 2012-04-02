@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<project name="template" default="jar" basedir=".">
+
+    <property name="classes" value="classes" />
+    <property name="src" value="src" />
+
+    <path id="core.classpath">
+        <pathelement path="${classes}" />
+        <fileset dir="lib">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+    
+    <target name="init" description="make dirs">
+        <mkdir dir="${classes}" />
+    </target>
+
+    <target name="compile" depends="init" description="Compile the source">
+        <javac srcdir="${src}" destdir="${classes}" includeAntRuntime="no">
+            <classpath refid="core.classpath" />
+        </javac>
+    </target>
+
+    <target name="res" depends="init" description="Copy the resources to build dir">
+        <copy todir="${classes}">
+            <fileset dir="${src}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="jar" depends="compile,res" description="Make jar file">
+        <jar destfile="${ant.project.name}.jar" basedir="${classes}" />
+    </target>
+
+    <target name="clean" description="Clean up the whole project">
+        <delete file="${ant.project.name}.jar" />
+        <delete dir="${classes}" />
+    </target>
+</project>

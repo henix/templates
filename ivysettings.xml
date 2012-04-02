@@ -1,0 +1,15 @@
+<ivysettings>
+	<settings defaultResolver="default"/>
+	<resolvers>
+		<ibiblio name="central" m2compatible="true"
+			pattern="[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+		<ssh name="myrepo" user="user" host="myhost">
+			<ivy pattern="/path/ivy-xmls/[organisation]/[module]/ivy-[revision].xml"/>
+			<artifact pattern="/path/[organisation]/[module]/[artifact]-[revision].[ext]"/>
+		</ssh>
+		<chain name="default" returnFirst="true">
+			<resolver ref="myrepo"/>
+			<resolver ref="central"/>
+		</chain>
+	</resolvers>
+</ivysettings>
