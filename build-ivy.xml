@@ -8,12 +8,19 @@
 	<property name="ivy.jar.name" value="ivy-${ivy.version}.jar" />
 
 	<property name="jsch.version" value="0.1.46" />
-	<property name="jsch.jar.name" value="jsch-${ivy.version}.jar" />
+	<property name="jsch.jar.name" value="jsch-${jsch.version}.jar" />
 
-	<target name="init-ivy" description="Bootstrap Ivy">
+	<target name="-check-ivy-down" description="check if ivylib exists">
+		<available property="ivylib.exists" file="${ivy.dir}/${ivy.jar.name}"/>
+	</target>
+
+	<target name="download-ivy" depends="-check-ivy-down" description="Download Ivy" unless="ivylib.exists">
 		<mkdir dir="${ivy.dir}" />
-		<get usetimestamp="true" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/${ivy.version}/${ivy.jar.name}" skipexisting="true" dest="${ivy.dir}/${ivy.jar.name}" />
-		<get usetimestamp="true" src="http://search.maven.org/remotecontent?filepath=com/jcraft/jsch/${jsch.version}/jsch-${jsch.version}.jar" skipexisting="true" dest="${ivy.dir}/${jsch.jar.name}" />
+		<get usetimestamp="true" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/${ivy.version}/${ivy.jar.name}" dest="${ivy.dir}/${ivy.jar.name}" />
+		<get usetimestamp="true" src="http://search.maven.org/remotecontent?filepath=com/jcraft/jsch/${jsch.version}/jsch-${jsch.version}.jar" dest="${ivy.dir}/${jsch.jar.name}" />
+	</target>
+
+	<target name="init-ivy" depends="download-ivy" description="Bootstrap Ivy">
 		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
 			<classpath>
 				<fileset dir="${ivy.dir}">
