@@ -17,7 +17,7 @@
     </target>
 
     <target name="compile" depends="init" description="Compile the source">
-        <javac srcdir="${src}" destdir="${classes}" includeAntRuntime="no">
+        <javac srcdir="${src}" destdir="${classes}" includeAntRuntime="no" debug="true">
             <classpath refid="core.classpath" />
         </javac>
     </target>
