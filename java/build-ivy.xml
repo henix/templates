@@ -31,7 +31,7 @@
 	</target>
 
 	<target name="resolve" depends="init-ivy" description="retrieve dependencies with ivy">
-		<ivy:retrieve />
+		<ivy:retrieve symlink="true" />
 	</target>
 
 	<target name="report" depends="resolve" description="report">
