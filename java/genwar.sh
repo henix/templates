@@ -33,7 +33,7 @@ if [ $(echo $groupId | sed -n -e '/^[A-Za-z0-9.]*$/p' | wc -l) -ne 1 ]; then
 	exit 3
 fi
 
-if [ $(echo $artifactId | sed -n -e '/^[A-Za-z0-9.]*$/p' | wc -l) -ne 1 ]; then
+if [ $(echo $artifactId | sed -n -e '/^[A-Za-z0-9.-]*$/p' | wc -l) -ne 1 ]; then
 	echo \"$artifactId\" is not valid artifactId
 	exit 3
 fi
