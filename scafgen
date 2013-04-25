@@ -1,0 +1,25 @@
+#!/bin/sh
+
+[ $# -ne 2 ] && echo Usage: scafgen srcpath destpath && exit 1
+[ ! -d $1 ] && echo srcpath must be a directory && exit 2
+[ ! -d $2 ] && echo destpath must be a directory && exit 2
+
+SEDFILE=$(mktemp)
+
+input_var() {
+	printf $1=
+	read -r var
+	echo "s/\\$1/${var}/g" >> $SEDFILE
+}
+
+for i in $(grep -ho -Ra '${[A-Za-z0-9.]*}' "$1" | sort | uniq); do
+	input_var $i
+done
+
+cp -R "$1"/* "$2"
+
+for i in $(cd "$1" ; find . -type f | sed -e 's/^\.\///'); do
+	sed -f $SEDFILE "$1/$i" > "$2/$i" && echo "$2/$i" generated
+done
+
+rm -f $SEDFILE
