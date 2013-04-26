@@ -12,7 +12,7 @@ input_var() {
 	echo "s/\\$1/${var}/g" >> $SEDFILE
 }
 
-for i in $(grep -ho -Ra '${[A-Za-z0-9.]*}' "$1" | sort | uniq); do
+for i in $(grep -ho -Ra '${[A-Za-z0-9.]*}' "$1" | sort -u); do
 	input_var $i
 done
 
