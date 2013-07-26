@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.apache.tomcat" % "tomcat-jdbc" % "7.0.39",
+  "org.apache.tomcat" % "tomcat-jdbc" % "7.0.42",
   "commons-dbutils" % "commons-dbutils" % "1.5",
-  "mysql" % "mysql-connector-java" % "5.1.24"
+  "mysql" % "mysql-connector-java" % "5.1.25"
 )
